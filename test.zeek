@@ -1,11 +1,16 @@
 global userAgents : table[addr] of set[string] = table();
 event http_header(c: connection, is_orig: bool, original_name: string, name: string, value: string)
 {
-  if(is_orig)
+  if(is_orig && name=="USER-AGENT")
   {
-    if(c$conn_id$orig_h in userAgents)
+    if(c$id$orig_h in userAgents)
     {
-      add userAgents[c$conn_id$orig_h][c$http$user_agent]
+      add userAgents[c$id$orig_h][value];
+    }
+    else
+    {
+    	userAgents[c$id$orig_h]=set();
+    	add userAgents[c$id$orig_h][value];
     }
   }  
 }
@@ -14,10 +19,11 @@ event zeek_done()
 {
   for(address in userAgents)
   {
-    if()
+    if(|userAgents[address]|>=3)
 	  {
-      print address," is a proxy";
+      print fmt("%s is a proxy",address);
     }
   }
 
 }
+
