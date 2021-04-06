@@ -1,5 +1,5 @@
 global userAgents : table[addr] of set[string] = table();
-event http_header(c: connection, is_orig: bool, original_name: string, name: string, value: string)
+event http_header(c: connection, is_orig: bool, name: string, value: string)
 {
   if(is_orig && name=="USER-AGENT")
   {
